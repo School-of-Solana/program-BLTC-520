@@ -2,7 +2,7 @@
 
 **Deployed Frontend URL:** https://solanaonlineblog.vercel.app/
 
-**Solana Program ID:** `4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs`
+**Solana Program ID:** `6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH`
 
 ## Project Overview
 
@@ -160,7 +160,7 @@ Create a `.env` file (if not exists):
 
 ```env
 VITE_SOLANA_NETWORK=devnet
-VITE_PROGRAM_ID=4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs
+VITE_PROGRAM_ID=6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH
 ```
 
 Start the development server:
@@ -413,7 +413,7 @@ The test suite automatically:
 
 ### Additional Notes for Evaluators
 
-- **Program ID**: The program is deployed with ID `4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs`. This ID is declared in the program source code.
+- **Program ID**: The program is deployed with ID `6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH`. This ID is declared in the program source code.
 - **PDA Implementation**: The program correctly implements PDAs for note accounts, ensuring one note per user.
 - **Security**: All access control checks are implemented correctly:
   - Only note authors can update/delete their notes
