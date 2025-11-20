@@ -1,5 +1,5 @@
 export const ONCHAIN_NOTES_IDL = {
-  address: "4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs",
+  address: "6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH",
   metadata: {
     name: "onchain_notes",
     version: "0.1.0",

@@ -3,13 +3,14 @@ use anchor_lang::prelude::*;
 use crate::{error::ErrorCode, Note, NOTE_SEED};
 
 #[derive(Accounts)]
+#[instruction(content: String)]
 pub struct CreateNote<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
         init,
         payer = authority,
-        space = Note::max_space(),
+        space = Note::space_for(content.len()),
         seeds = [NOTE_SEED, authority.key().as_ref()],
         bump
     )]

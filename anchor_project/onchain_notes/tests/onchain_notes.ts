@@ -51,7 +51,11 @@ describe("onchain_notes", () => {
   it("updates note content for the author", async () => {
     await program.methods
       .updateNote("updated content")
-      .accounts({ authority: author.publicKey, note: notePda })
+      .accounts({ 
+        authority: author.publicKey, 
+        note: notePda,
+        systemProgram: SystemProgram.programId
+      })
       .rpc();
 
     const note = await program.account.note.fetch(notePda);
@@ -236,6 +240,68 @@ describe("onchain_notes", () => {
       } else {
         assert.fail(`Expected InvalidTipAmount error, got: ${JSON.stringify(err)}`);
       }
+    }
+  });
+
+  it("creates a note with maximum allowed length (880 bytes)", async () => {
+    const maxLenContent = "a".repeat(880);
+    const newNoteKp = Keypair.generate();
+    const [newNotePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("note"), newNoteKp.publicKey.toBuffer()],
+      program.programId
+    );
+    
+    // Airdrop
+    const sig = await provider.connection.requestAirdrop(newNoteKp.publicKey, LAMPORTS_PER_SOL);
+    await provider.connection.confirmTransaction(sig, "confirmed");
+
+    await program.methods
+      .createNote(maxLenContent)
+      .accounts({
+        authority: newNoteKp.publicKey,
+        note: newNotePda,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([newNoteKp])
+      .rpc();
+
+    const note = await program.account.note.fetch(newNotePda);
+    expect(note.content).to.equal(maxLenContent);
+  });
+
+  it("fails when content exceeds maximum length (881 bytes)", async () => {
+    const tooLongContent = "a".repeat(881);
+    const newNoteKp = Keypair.generate();
+    const [newNotePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("note"), newNoteKp.publicKey.toBuffer()],
+      program.programId
+    );
+    
+    // Airdrop
+    const sig = await provider.connection.requestAirdrop(newNoteKp.publicKey, LAMPORTS_PER_SOL);
+    await provider.connection.confirmTransaction(sig, "confirmed");
+
+    try {
+      await program.methods
+        .createNote(tooLongContent)
+        .accounts({
+          authority: newNoteKp.publicKey,
+          note: newNotePda,
+          systemProgram: SystemProgram.programId,
+        })
+        .signers([newNoteKp])
+        .rpc();
+      assert.fail("Should have failed with ContentTooLong");
+    } catch (err: any) {
+       // We expect ContentTooLong from the program
+       if (err.error && err.error.errorCode) {
+         expect(err.error.errorCode.code).to.equal("ContentTooLong");
+       } else {
+         // If it fails with something else (like encoding error), we want to see it
+         console.log("Unexpected error:", err);
+         // If it's the "encoding overruns Buffer" error, it might show up here
+         throw err;
+       }
     }
   });
 });

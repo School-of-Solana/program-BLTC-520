@@ -20,7 +20,7 @@ type NoteAccount = {
   updatedAt: number;
 };
 
-const MAX_CONTENT_LENGTH = 1024;
+const MAX_CONTENT_LENGTH = 880;
 const NOTE_SEED = "note";
 const PROGRAM_ADDRESS =
   (import.meta.env.VITE_PROGRAM_ID as string) ?? ONCHAIN_NOTES_IDL.address;
@@ -154,13 +154,18 @@ function App() {
         [Buffer.from(NOTE_SEED), wallet.publicKey.toBuffer()],
         PROGRAM_ID,
       );
+      let signature: string;
       if (myNote) {
-        await program.methods
+        signature = await program.methods
           .updateNote(content.trim())
-          .accounts({ authority: wallet.publicKey, note: notePda })
+          .accounts({ 
+            authority: wallet.publicKey, 
+            note: notePda,
+            systemProgram: SystemProgram.programId
+          })
           .rpc();
       } else {
-        await program.methods
+        signature = await program.methods
           .createNote(content.trim())
           .accounts({
             authority: wallet.publicKey,
@@ -169,7 +174,16 @@ function App() {
           })
           .rpc();
       }
-      toast.success(myNote ? "Note updated" : "Note published");
+      const explorerUrl = `https://solscan.io/tx/${signature}?cluster=devnet`;
+      toast.success(
+        <div>
+          {myNote ? "Note updated" : "Note published"}
+          <br />
+          <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>
+            View transaction
+          </a>
+        </div>
+      );
       await refetch();
     } catch (error) {
       console.error(error);
@@ -190,11 +204,20 @@ function App() {
         [Buffer.from(NOTE_SEED), wallet.publicKey.toBuffer()],
         PROGRAM_ID,
       );
-      await program.methods
+      const signature = await program.methods
         .deleteNote()
         .accounts({ authority: wallet.publicKey, note: notePda })
         .rpc();
-      toast.success("Note deleted");
+      const explorerUrl = `https://solscan.io/tx/${signature}?cluster=devnet`;
+      toast.success(
+        <div>
+          Note deleted
+          <br />
+          <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>
+            View transaction
+          </a>
+        </div>
+      );
       setContent("");
       await refetch();
     } catch (error) {
@@ -212,7 +235,7 @@ function App() {
       return;
     }
     try {
-      await program.methods
+      const signature = await program.methods
         .upvoteNote()
         .accounts({
           voter: wallet.publicKey,
@@ -220,7 +243,16 @@ function App() {
           note: note.publicKey,
         })
         .rpc();
-      toast.success("Upvoted!");
+      const explorerUrl = `https://solscan.io/tx/${signature}?cluster=devnet`;
+      toast.success(
+        <div>
+          Upvoted!
+          <br />
+          <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>
+            View transaction
+          </a>
+        </div>
+      );
       await refetch();
     } catch (error) {
       console.error(error);
@@ -242,7 +274,7 @@ function App() {
     }
     setIsTipping(true);
     try {
-      await program.methods
+      const signature = await program.methods
         .tipNote(new anchor.BN(lamports))
         .accounts({
           tipper: wallet.publicKey,
@@ -251,7 +283,16 @@ function App() {
           systemProgram: SystemProgram.programId,
         })
         .rpc();
-      toast.success("Tip sent ✨");
+      const explorerUrl = `https://solscan.io/tx/${signature}?cluster=devnet`;
+      toast.success(
+        <div>
+          Tip sent ✨
+          <br />
+          <a href={explorerUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "underline" }}>
+            View transaction
+          </a>
+        </div>
+      );
       setSelectedTipNote(null);
       await refetch();
     } catch (error) {
@@ -393,6 +434,78 @@ function App() {
           )}
         </section>
       </main>
+
+      <section className="info-card">
+        <div className="card-header">
+          <div>
+            <p className="eyebrow">Technical Details</p>
+            <h2>Why 880 characters?</h2>
+          </div>
+        </div>
+        <p style={{ marginBottom: "1.5rem", opacity: 0.8 }}>
+          Solana transactions have a maximum size of <strong>1,232 bytes</strong>. Here's how that space is allocated:
+        </p>
+        <div className="buffer-visualization">
+          <div className="buffer-bar">
+            <div className="buffer-segment signatures" style={{ width: "5.2%" }}>
+              <div className="buffer-tooltip">
+                <span className="buffer-label">Signatures</span>
+                <span className="buffer-value">64 bytes</span>
+              </div>
+            </div>
+            <div className="buffer-segment instruction" style={{ width: "0.65%" }}>
+              <div className="buffer-tooltip">
+                <span className="buffer-label">Discriminator</span>
+                <span className="buffer-value">8 bytes</span>
+              </div>
+            </div>
+            <div className="buffer-segment string-prefix" style={{ width: "0.32%" }}>
+              <div className="buffer-tooltip">
+                <span className="buffer-label">String Length</span>
+                <span className="buffer-value">4 bytes</span>
+              </div>
+            </div>
+            <div className="buffer-segment content" style={{ width: "71.4%" }}>
+              <div className="buffer-tooltip">
+                <span className="buffer-label">Your Content</span>
+                <span className="buffer-value">880 bytes</span>
+              </div>
+            </div>
+            <div className="buffer-segment overhead" style={{ width: "22.4%" }}>
+              <div className="buffer-tooltip">
+                <span className="buffer-label">Other Overhead</span>
+                <span className="buffer-value">276 bytes</span>
+              </div>
+            </div>
+          </div>
+          <div className="buffer-legend">
+            <div className="legend-item">
+              <div className="legend-color signatures"></div>
+              <span>Transaction signatures & metadata</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color instruction"></div>
+              <span>Instruction discriminator</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color string-prefix"></div>
+              <span>String length prefix (Borsh encoding)</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color content"></div>
+              <span>Your actual note content</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color overhead"></div>
+              <span>Accounts, recent blockhash, etc.</span>
+            </div>
+          </div>
+        </div>
+        <div className="info-callout">
+          <strong>💡 Fun fact:</strong> 880 bytes = approximately 145 words, or 2-3 paragraphs of text. 
+          Perfect for sharing ideas without writing a novel!
+        </div>
+      </section>
 
       {selectedTipNote && (
         <div className="tip-overlay">

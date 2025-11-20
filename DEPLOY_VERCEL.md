@@ -12,7 +12,7 @@ This guide explains how to deploy the Onchain Notes frontend to Vercel with the 
 The frontend requires two environment variables:
 
 1. **`VITE_PROGRAM_ID`**: Your deployed Solana program ID
-   - Value: `4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs`
+   - Value: `6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH`
    
 2. **`VITE_SOLANA_RPC_URL`** (Optional): Solana RPC endpoint
    - Value: `https://api.devnet.solana.com` (or your custom RPC endpoint)
@@ -38,7 +38,7 @@ The frontend requires two environment variables:
    
    Variable 1:
    - **Key**: `VITE_PROGRAM_ID`
-   - **Value**: `4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs`
+   - **Value**: `6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH`
    - **Environment**: Select all (Production, Preview, Development)
    - Click **Save**
 
@@ -81,7 +81,7 @@ The frontend requires two environment variables:
 5. **Set environment variables**:
    ```bash
    vercel env add VITE_PROGRAM_ID
-   # When prompted, enter: 4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs
+   # When prompted, enter: 6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH
    # Select all environments (Production, Preview, Development)
 
    vercel env add VITE_SOLANA_RPC_URL
@@ -106,7 +106,7 @@ You can also add environment variables to a `vercel.json` file, but **this is no
 ```json
 {
   "env": {
-    "VITE_PROGRAM_ID": "4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs",
+    "VITE_PROGRAM_ID": "6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH",
     "VITE_SOLANA_RPC_URL": "https://api.devnet.solana.com"
   }
 }

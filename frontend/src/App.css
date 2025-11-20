@@ -283,17 +283,297 @@
   font-size: 1rem;
 }
 
+/* Buffer Visualization Styles */
+.info-card {
+  padding: 2rem;
+  border-radius: 24px;
+  background: rgba(12, 16, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 55px rgba(2, 8, 20, 0.6);
+  margin: 2rem auto 0;
+  max-width: 1200px;
+}
+
+.buffer-visualization {
+  margin: 4rem 0 2rem; /* Added top margin for tooltip space */
+}
+
+.buffer-bar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 60px; /* Slightly shorter bar */
+  margin: 0 0 3rem;
+  border-radius: 16px;
+  overflow: visible; /* Allow tooltips to overflow */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.buffer-segment {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: expandWidth 0.8s ease-out backwards;
+  cursor: pointer;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.buffer-segment:last-child {
+  border-right: none;
+}
+
+.buffer-segment:hover {
+  filter: brightness(1.2) saturate(1.2);
+  z-index: 100; /* Ensure tooltip is on top */
+}
+
+.buffer-segment.signatures {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation-delay: 0.1s;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.buffer-segment.instruction {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  animation-delay: 0.2s;
+}
+
+.buffer-segment.string-prefix {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  animation-delay: 0.3s;
+}
+
+.buffer-segment.content {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  animation-delay: 0.4s;
+}
+
+.buffer-segment.overhead {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  animation-delay: 0.5s;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+/* Tooltip Styles */
+.buffer-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px) scale(0.9);
+  background: #000000;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-width: 140px;
+  text-align: center;
+  z-index: 100;
+  margin-bottom: 12px;
+}
+
+/* Tooltip Arrow */
+.buffer-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #000000 transparent transparent transparent;
+}
+
+.buffer-segment:hover .buffer-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.buffer-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 0.25rem;
+}
+
+.buffer-value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.buffer-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  animation: fadeIn 0.6s ease-out backwards;
+}
+
+.legend-item:nth-child(1) { animation-delay: 0.6s; }
+.legend-item:nth-child(2) { animation-delay: 0.7s; }
+.legend-item:nth-child(3) { animation-delay: 0.8s; }
+.legend-item:nth-child(4) { animation-delay: 0.9s; }
+.legend-item:nth-child(5) { animation-delay: 1s; }
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.legend-color.signatures {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.legend-color.instruction {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.legend-color.string-prefix {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.legend-color.content {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.legend-color.overhead {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.info-callout {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(247, 143, 75, 0.15), rgba(243, 71, 108, 0.15));
+  border: 1px solid rgba(247, 143, 75, 0.3);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  animation: fadeIn 0.6s ease-out 1.1s backwards;
+}
+
+.info-callout strong {
+  color: var(--accent);
+}
+
+@keyframes expandWidth {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .hero {
     padding: 1.5rem;
   }
 
   .composer-card,
-  .feed-card {
+  .feed-card,
+  .info-card {
     padding: 1.5rem;
   }
 
   .note-actions {
     flex-direction: column;
   }
+
+  .buffer-bar {
+    height: 50px;
+    /* Keep horizontal layout on mobile */
+  }
+
+  .buffer-tooltip {
+    /* Adjust tooltip for mobile if needed, but default usually works */
+    min-width: 120px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .buffer-label {
+    font-size: 0.6rem;
+  }
+
+  .buffer-value {
+    font-size: 0.85rem;
+  }
+
+  .buffer-legend {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
 }
+
+@media (max-width: 480px) {
+  .buffer-bar {
+    height: 40px;
+  }
+  
+  /* On very small screens, we might want to ensure tooltips don't go off screen
+     This is a simple fix, for production you might want JS positioning */
+  .buffer-segment:first-child .buffer-tooltip {
+    left: 0;
+    transform: translateX(0) translateY(-10px) scale(0.9);
+  }
+  .buffer-segment:first-child:hover .buffer-tooltip {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  .buffer-segment:first-child .buffer-tooltip::after {
+    left: 20px;
+  }
+
+  .buffer-segment:last-child .buffer-tooltip {
+    left: auto;
+    right: 0;
+    transform: translateX(0) translateY(-10px) scale(0.9);
+  }
+  .buffer-segment:last-child:hover .buffer-tooltip {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  .buffer-segment:last-child .buffer-tooltip::after {
+    left: auto;
+    right: 20px;
+  }
+}
+
+

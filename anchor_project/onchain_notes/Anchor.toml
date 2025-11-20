@@ -6,16 +6,16 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-onchain_notes = "4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs"
+onchain_notes = "6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH"
 
 [programs.devnet]
-onchain_notes = "4zNGgpwSFSS8gZSU4FgA9nmaM2UT6kpBS3V672Rwnuzs"
+onchain_notes = "6CBafYtMRgRdk72FDmcLhHng7zCGfiAGi6bwnvifrsaH"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
