@@ -1,0 +1,118 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+**/dist-ssr/
+target/
+**/target/
+*.so
+*.dylib
+*.dll
+
+# Anchor/Solana
+.anchor/
+test-ledger/
+**/test-ledger/
+.DS_Store
+**/.DS_Store
+
+# IDL and types (generated)
+**/target/types/
+**/target/idl/
+**/target/deploy/
+**/target/debug/
+**/target/release/
+
+# Environment variables
+.env
+**/.env
+.env.local
+**/.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+validator*.log
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Deployment
+.vercel/
+.vercel
+
+# Keypairs and wallets (CRITICAL - never commit!)
+*-keypair.json
+**/*-keypair.json
+keypair.json
+**/keypair.json
+test-ledger/**/*.json
+**/test-ledger/**/*.json
+# Solana wallet files (but allow IDL JSON files in target/)
+~/.config/solana/id.json
+.id.json
+*.id.json
+
+# Test artifacts
+coverage/
+.nyc_output/
+*.lcov
+
+# Cargo (lock files are typically committed for programs, ignored for workspaces)
+**/Cargo.lock
+.cargo/
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.pid
+*.seed
+*.pid.lock
+
+# Frontend specific
+frontend/.vite/
+frontend/dist/
+frontend/build/
+
+# Rust/Solana specific
+*.wasm
+keypairs/
+*.keypair.json
+faucet-keypair.json
+**/faucet-keypair.json
+validator-keypair.json
+**/validator-keypair.json
+stake-account-keypair.json
+**/stake-account-keypair.json
+vote-account-keypair.json
+**/vote-account-keypair.json
+
