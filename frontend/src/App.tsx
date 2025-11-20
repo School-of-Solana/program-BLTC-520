@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { ONCHAIN_NOTES_IDL } from "./idl/onchain_notes";
+import { Buffer } from "buffer";
 
 type NoteAccount = {
   publicKey: PublicKey;
@@ -27,6 +28,7 @@ const PROGRAM_ID = new PublicKey(PROGRAM_ADDRESS);
 const idlWithAddress = { ...ONCHAIN_NOTES_IDL, address: PROGRAM_ADDRESS } as const;
 const typedIdl = idlWithAddress as unknown as anchor.Idl;
 const coder = new anchor.BorshAccountsCoder(typedIdl);
+const noteDiscriminator = coder.accountDiscriminator("Note");
 
 const shorten = (value: PublicKey | string, chars = 4) => {
   const str = typeof value === "string" ? value : value.toBase58();
@@ -77,7 +79,16 @@ function App() {
   }, [provider]);
 
   const fetchNotes = useCallback(async (): Promise<NoteAccount[]> => {
-    const accounts = await connection.getProgramAccounts(PROGRAM_ID);
+    const accounts = await connection.getProgramAccounts(PROGRAM_ID, {
+      filters: [
+        {
+          memcmp: {
+            offset: 0,
+            bytes: anchor.utils.bytes.bs58.encode(noteDiscriminator),
+          },
+        },
+      ],
+    });
     return accounts
       .map(({ account, pubkey }) => {
         try {
