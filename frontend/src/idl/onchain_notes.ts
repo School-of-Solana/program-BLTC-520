@@ -95,6 +95,10 @@ export const ONCHAIN_NOTES_IDL = {
             ],
           },
         },
+        {
+          name: "system_program",
+          address: "11111111111111111111111111111111",
+        },
       ],
       args: [{ name: "content", type: "string" }],
     },
@@ -177,7 +181,6 @@ export const ONCHAIN_NOTES_IDL = {
 } as const;
 
 export type OnchainNotesIdl = typeof ONCHAIN_NOTES_IDL;
-
 
 
 
